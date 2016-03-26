@@ -17,13 +17,14 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-   <property>
+    <property>
         <name>fs.defaultFS</name>
         <value>hdfs://aug:9000/</value>
     </property>
     <property>
-         <name>hadoop.tmp.dir</name>
-         <value>file:/workspace/runtime/hadoop-2.6.3/tmp</value>
+        <name>hadoop.tmp.dir</name>
+        <value>file:/workspace/runtime/hadoop-2.6.3/tmp</value>
     </property>
+
 
 </configuration>
