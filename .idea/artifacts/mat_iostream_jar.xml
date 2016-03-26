@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="mat_iostream:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/mat_iostream_jar</output-path>
+    <root id="archive" name="mat_iostream.jar">
+      <element id="module-output" name="mat_iostream" />
+    </root>
+  </artifact>
+</component>
