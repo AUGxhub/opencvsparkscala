@@ -6,6 +6,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.opencv.core._
+import org.opencv.objdetect.CascadeClassifier
 
 /**
  * Created by augta on 2016/3/24.
@@ -19,11 +20,16 @@ object getPixels {
     val sc = new SparkContext(conf)
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     println("all ready")
-    val aePath = "hdfs://192.168.79.128:9000/bili.jpg"
-    val matImage = loadImageMatFromFile(aePath)
+    //read
+    //    val aePath = "hdfs://192.168.79.128:9000/temp/bili.jpg"
+    val aePath = "hdfs://192.168.79.128:9000/datasets/lfw/Avril_Lavigne/Avril_Lavigne_0001.jpg"
+    var matImage = loadImageMatFromFile(aePath)
     //    System.out.println("mat = " + matImage.dump());
+
+    //get features algorithm
+    matImage = detectFace(matImage)
     //save
-    val dstPath = "hdfs://192.168.79.128:9000/temp/bili.jpg"
+    val dstPath = "hdfs://192.168.79.128:9000/temp/l.jpg"
     if (saveMatToPath(matImage, dstPath)) println("save success")
     sc.stop()
   }
@@ -56,6 +62,24 @@ object getPixels {
     }
   }
 
+  /*photo process algorithms
+  *  1 DetectFace
+  */
+  //Detect face
+  def detectFace(srcImage: Mat): Mat = {
+    //    val decPath = "hdfs://192.168.79.128:9000/lbpcascade_frontalface.xml"
+    val decPath = "E:\\tool\\spark_runtime\\lib\\opencv\\sources\\data\\lbpcascades\\lbpcascade_frontalface.xml"
+    val faceDetector = new CascadeClassifier(decPath)
+    val faceDetections = new MatOfRect()
+    faceDetector.detectMultiScale(srcImage, faceDetections)
+    println("Detected " + faceDetections.toArray().length + " faces")
+    // Draw a bounding box around each face.
+    for (rect <- faceDetections.toArray()) {
+      Core.rectangle(srcImage, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+    }
+    srcImage
+  }
+
   //load a img from hdfs filesystem and reutrn a BufferedImage
   def loadImageFromFile(path: String): BufferedImage = {
     val conf_hdfs = new Configuration()
@@ -80,6 +104,7 @@ object getPixels {
     }
   }
 
+  //
 
 }
 
