@@ -1,3 +1,5 @@
+package tools;
+
 import org.opencv.core.Mat;
 
 import java.awt.*;
@@ -6,6 +8,7 @@ import java.awt.image.DataBufferByte;
 
 /**
  * Created by augta on 2016/3/26.
+ * todo complete change ByteBuffer to Mat
  */
 public class BufByteToMat {
     BufferedImage original;

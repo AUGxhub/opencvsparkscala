@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="process_and_train_svm:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/process_and_train_svm_jar</output-path>
+    <root id="archive" name="process_and_train_svm.jar">
+      <element id="module-output" name="process_and_train_svm" />
+    </root>
+  </artifact>
+</component>

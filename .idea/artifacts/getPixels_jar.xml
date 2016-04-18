@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="getPixels:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/getPixels_jar</output-path>
-    <root id="archive" name="getPixels.jar">
-      <element id="module-output" name="getPixels" />
-    </root>
-  </artifact>
-</component>

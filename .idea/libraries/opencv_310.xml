@@ -1,14 +1,14 @@
 <component name="libraryTable">
   <library name="opencv-310">
     <CLASSES>
-      <root url="jar://E:/tool/spark环境包/lib/opencv/build/java/opencv-310.jar!/" />
+      <root url="jar://E:/tool/spark_runtime/lib/opencv/build/java/opencv-310.jar!/" />
     </CLASSES>
     <JAVADOC />
     <NATIVE>
-      <root url="file://E:/tool/spark环境包/lib/opencv/build/java/x64" />
+      <root url="file://E:/tool/spark_runtime/lib/opencv/build/java/x64" />
     </NATIVE>
     <SOURCES>
-      <root url="jar://E:/tool/spark环境包/lib/opencv/build/java/opencv-310.jar!/" />
+      <root url="jar://E:/tool/spark_runtime/lib/opencv/build/java/opencv-310.jar!/" />
     </SOURCES>
   </library>
 </component>

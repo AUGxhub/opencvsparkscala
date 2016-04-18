@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="javacv-bin">
+    <CLASSES>
+      <root url="file://E:/tool/spark_runtime/lib/javacv-bin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://E:/tool/spark_runtime/lib/javacv-bin" recursive="false" />
+  </library>
+</component>

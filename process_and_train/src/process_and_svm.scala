@@ -7,18 +7,19 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.opencv.core._
 import org.opencv.objdetect.CascadeClassifier
+import tools.BufImgToMat
 
 /**
  * Created by augta on 2016/3/24.
  */
-object getPixels {
+object process_and_svm {
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("process_image")
     conf.setMaster("spark://192.168.79.128:7077")
-    System.setProperty("hadoop.home.dir", "E:\\hadoop");
-    conf.setJars(Seq("E:\\workspace\\spark\\ieda\\out\\artifacts\\getPixels_jar\\getPixels.jar"))
+    System.setProperty("hadoop.home.dir", "E:\\hadoop")
+    conf.setJars(Seq("E:\\workspace\\spark\\ieda\\out\\artifacts\\process_and_train_svm_jar\\process_and_train_svm.jar"))
     val sc = new SparkContext(conf)
-    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
     println("all ready")
     //read
     //    val aePath = "hdfs://192.168.79.128:9000/temp/bili.jpg"
@@ -103,8 +104,6 @@ object getPixels {
       out.close()
     }
   }
-
-  //
 
 }
 

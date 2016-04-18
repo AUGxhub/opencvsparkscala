@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="SVM:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SVM_jar</output-path>
+    <root id="archive" name="SVM.jar">
+      <element id="module-output" name="SVM" />
+    </root>
+  </artifact>
+</component>
