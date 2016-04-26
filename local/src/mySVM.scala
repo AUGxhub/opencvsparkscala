@@ -36,10 +36,10 @@ object mySVM {
         val line = r.split(" ")
         val label = line(0).toInt
         val features = line(1).split(",").map(_.toDouble)
-        println(features)
+        // println(features)
         LabeledPoint(label, Vectors.dense(features))
     }
-    val numIterations = 100
+    val numIterations = 200
     val svmModule = SVMMultiClassOVAWithSGD.train(trainData, numIterations)
     val predicionAndLabel = trainData.map(p => (svmModule.predict(p.features), p.label))
     val accuracy = 1.0 * predicionAndLabel.filter(x => x._1 == x._2).count() / trainData.count()
@@ -68,6 +68,12 @@ object mySVM {
   def loopDir(dir: File): Array[File] = {
     val dirs = dir.listFiles.filter(_.isDirectory)
     dirs
+  }
+
+  //访问目录中所有文件
+  def loopFile(dir: File): Array[File] = {
+    val files = dir.listFiles.filter(_.isFile)
+    files
   }
 
   //对词频向量的文本预处理
@@ -103,12 +109,6 @@ object mySVM {
     }
     features.close()
     featuresPath + "\\" + "features"
-  }
-
-  //访问目录中所有文件
-  def loopFile(dir: File): Array[File] = {
-    val files = dir.listFiles.filter(_.isFile)
-    files
   }
 
   //把按图片名字命名的 特征向量行名字子 置换为数字类别  其数字的大小由目录排列顺序决
