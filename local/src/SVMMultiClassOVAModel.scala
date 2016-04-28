@@ -27,12 +27,6 @@ class SVMMultiClassOVAModel(classModels: Array[SVMModel]) extends Classification
     }
   }
 
-  def predictPoint(testData: Vector, models: Array[(SVMModel, Int)]): Double =
-    models
-      .map { case (classModel, classNumber) => (classModel.predict(testData), classNumber) }
-      .maxBy { case (score, classNumber) => score }
-      ._2
-
   /**
    * Predict values for a single data point using the model trained.
    *
@@ -40,6 +34,12 @@ class SVMMultiClassOVAModel(classModels: Array[SVMModel]) extends Classification
    * @return predicted category from the trained model
    */
   override def predict(testData: Vector): Double = predictPoint(testData, classModelsWithIndex)
+
+  def predictPoint(testData: Vector, models: Array[(SVMModel, Int)]): Double =
+    models
+      .map { case (classModel, classNumber) => (classModel.predict(testData), classNumber) }
+      .maxBy { case (score, classNumber) => score }
+      ._2
 
 }
 
@@ -72,7 +72,13 @@ object SVMMultiClassOVAWithSGD {
   /**
    * Train a Multiclass SVM model given an RDD of (label, features) pairs,
    * using One-vs-Rest method - create one SVMModel per class with SVMWithSGD.
-   *
+   * data – 训练集，RDD[LabeledPoint]
+   * iterations – 迭代次数，默认100
+   * step – SGD步长，默认为1.0
+   * regParam – 正则化参数，默认0.01T
+   * miniBatchFraction – 每一轮迭代，参入训练的样本比例，默认1.0（全部参入）.
+   * initialWeights – 初始取值，默认是0向量
+   * regType – 正则化类型，默认”l2″
    * @param input RDD of (label, array of features) pairs.
    * @param numIterations Number of iterations of gradient descent to run.
    * @param stepSize Step size to be used for each iteration of gradient descent.

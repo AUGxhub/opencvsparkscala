@@ -1,3 +1,5 @@
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.{SparkConf, SparkContext}
 
 
@@ -13,23 +15,30 @@ object changeCategory {
     println("all ready")
 
     //core
-    val raw = sc.textFile("C:\\Users\\augta\\Desktop\\mnist")
-    var temp = raw.zipWithIndex()
-
-    //    temp.filter(_._1.charAt(0) =='5')
-    //change '5' to the char you want to repalce from
-    //change 'x' to the char you want to reform into
-    val out = raw.map(
+    //    val raw = sc.textFile("C:\\Users\\augta\\Desktop\\datasets\\split\\mnist")
+    val filePath = "C:\\Users\\augta\\Desktop\\datasets\\split\\mnist"
+    var raw = MLUtils.loadLibSVMFile(sc, filePath)
+    val finalLabel = raw.map {
       x =>
-        if (x.charAt(0) == '5') {
-          var txt = x
-          txt = 'x' + txt.substring(1)
-          txt
-        } else
-          x
-    )
+        var tempLabel = x.label
+        if (x.label == "-1".toDouble) tempLabel = 0
+        LabeledPoint(tempLabel, x.features)
+    }
+    MLUtils.saveAsLibSVMFile(finalLabel, "C:\\Users\\augta\\Desktop\\datasets\\split\\mnist2")
+    //   finalLabel.saveAsTextFile("C:\\Users\\augta\\Desktop\\datasets\\split\\mnist2")
+    //    val result = new PrintWriter("C:\\Users\\augta\\Desktop\\datasets\\split\\mnist2") //≤‚ ‘ ‰≥ˆ
+    //    result.println(lines(0) + l1.mkString.substring(temp.size)) //≤‚ ‘ ‰≥ˆ
+    //    val original = Source.fromFile(filePath)
+    //    val originalyLineItr = original.getLines()
+    //    val result = for (l1 <- originalyLineItr) {
+    //      var lines = l1.mkString.split(" ")
+    //      val temp = lines(0)
+    //      if (lines(0) == "-1") lines(0) = "x"
+    //      //      result.println(lines(0) +l1.mkString.substring(temp.size))//≤‚ ‘ ‰≥ˆ
+    //      lines(0) + l1.mkString.substring(temp.size)
+    //    }
+
     //    println(out.take(10).mkString)
-    out.saveAsTextFile("C:\\Users\\augta\\Desktop\\mnist2")
     sc.stop()
   }
 }

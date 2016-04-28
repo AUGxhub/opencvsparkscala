@@ -21,10 +21,12 @@ object mySVM {
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
     println("all ready")
     // 生成分类目录
-    val trainPath = "C:\\Users\\augta\\Desktop\\datasets\\data\\train"
+    //    val trainPath = "C:\\Users\\augta\\Desktop\\datasets\\data\\train"
+    val trainPath = "C:\\Users\\augta\\Desktop\\datasets\\4categories\\data"
     val categoryPath = getCategories(trainPath)
     //生成每个文件词频汇总文件
-    val dataPath = "C:\\Users\\augta\\Desktop\\datasets\\mysvm"
+    //    val dataPath = "C:\\Users\\augta\\Desktop\\datasets\\mysvm"
+    val dataPath = "C:\\Users\\augta\\Desktop\\datasets\\4categories\\result"
     val featuresPath = preTextFilter(dataPath)
     //对上面的汇总文件每条信息进行分类信息替换
     val numCategory = markLabels(categoryPath, featuresPath, dataPath)

@@ -1,4 +1,4 @@
-import java.io.{File, PrintWriter}
+import java.io._
 
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.regression.LabeledPoint
@@ -14,7 +14,7 @@ object mf25KSVM {
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("mf25KSVM")
     //conf.setMaster("spark://192.168.79.128:7077")
-    conf.setMaster("local")
+    conf.setMaster("local[8]") //使用8个本地线程
     conf.setJars(Seq("E:\\workspace\\spark\\ieda\\out\\artifacts\\local_jar\\local.jar"))
     System.setProperty("hadoop.home.dir", "E:\\hadoop")
     val sc = new SparkContext(conf)
@@ -35,19 +35,48 @@ object mf25KSVM {
       r =>
         val line = r.split(" ")
         val label = line(0).toInt
-        val features = line(1).split(",").map(_.toDouble)
+        val features = line(1).split(",").map(_.toDouble * 10000)
         // println(features)
         LabeledPoint(label, Vectors.dense(features))
     }
+    //    //缩放所有的特征值
+    //    val scaler = new StandardScaler(withMean = true, withStd = true)
+    //    val scaleredRawDate = scaler.fit(tempData) //
+    //    val trainData = rawData.map {
+    //        r =>
+    //          val line = r.split(" ")
+    //          val label = line(0).toInt
+    //          LabeledPoint(label, scaleredRawDate.transform(Vectors.dense(line(1).split(",").map(_.toDouble ))))
+    //      }
+
+    //  trainData.saveAsTextFile("C:\\Users\\augta\\Desktop\\datasets\\trainData.tsv")//暂存以便查看
+    val splits = trainData.randomSplit(Array(4.6, 95.4), 1)
+    val testSet = splits(1)
+    val trainSet = splits(0)
     val pramPath = "C:\\Users\\augta\\Desktop\\datasets\\mirflickr25k\\prams"
-    val pramsResults = new PrintWriter(pramPath)
-    for (i <- 1 to 100) {
-      val numIterations = i * 10
-      val svmModule = SVMMultiClassOVAWithSGD.train(trainData, numIterations)
-      val predicionAndLabel = trainData.map(p => (svmModule.predict(p.features), p.label))
-      val accuracy = 1.0 * predicionAndLabel.filter(x => x._1 == x._2).count() / trainData.count()
-      pramsResults.println("numIterations is " + numIterations + "accuracy is " + accuracy)
-    }
+    val pramsResults = new FileWriter(pramPath, true)
+    //    for (i <- 1 to 100) {
+    val numIterations = 1000000
+    val step = 0.001
+    val regParam = 0.07
+    val miniBatchFraction = 1.0
+    val svmModule = SVMMultiClassOVAWithSGD.train(trainSet, numIterations, step, regParam, miniBatchFraction)
+    //保存模型
+    val serial_out = new ObjectOutputStream(new FileOutputStream("C:\\Users\\augta\\Desktop\\datasets\\mirflickr25k\\result\\svm_model.obj"))
+    serial_out.writeObject(svmModule)
+    serial_out.close()
+    //读取模型
+    //    val serial_in = new ObjectInputStream(new FileInputStream("C:\\Users\\augta\\Desktop\\datasets\\mirflickr25k\\result\\svm_model.obj"))
+    //    val saved_model = serial_in.readObject().asInstanceOf[SVMMultiClassOVAModel]
+    //
+    val predicionAndLabel = testSet.map(p => (svmModule.predict(p.features), p.label))
+    val accuracy = 1.0 * predicionAndLabel.filter(x => x._1 == x._2).count() / trainData.count()
+    pramsResults.write("numIterations is " + numIterations
+      + " accuracy is " + accuracy
+      + " step is " + step
+      + " regParam is " + regParam
+      + " miniBatchFraction is " + miniBatchFraction + "No scalered train4.60 test95.4 *10000" + "\n")
+    //    }
     pramsResults.close()
 
     //程序运行结束
