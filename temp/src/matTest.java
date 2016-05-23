@@ -24,10 +24,6 @@ public class matTest {
         System.out.println(lines[0]);
         System.out.println(lines[1]);
 
-        char[] ch = lines[0].split(",");
-        ch += lines[1].split(",");
-        System.out.println(test.rows());
-        System.out.println(test.cols());
 
         double te[][] = new double[test.rows()][test.cols()];
 //        for (int i = 0; i < test.rows(); i++) {

@@ -21,12 +21,12 @@ object mySVM {
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
     println("all ready")
     // 生成分类目录
-    //    val trainPath = "C:\\Users\\augta\\Desktop\\datasets\\data\\train"
-    val trainPath = "C:\\Users\\augta\\Desktop\\datasets\\4categories\\data"
+    val trainPath = "C:\\Users\\augta\\Desktop\\datasets\\data\\train"
+    //    val trainPath = "C:\\Users\\augta\\Desktop\\datasets\\4categories\\data"
     val categoryPath = getCategories(trainPath)
     //生成每个文件词频汇总文件
-    //    val dataPath = "C:\\Users\\augta\\Desktop\\datasets\\mysvm"
-    val dataPath = "C:\\Users\\augta\\Desktop\\datasets\\4categories\\result"
+    val dataPath = "C:\\Users\\augta\\Desktop\\datasets\\mysvm"
+    //val dataPath = "C:\\Users\\augta\\Desktop\\datasets\\4categories\\result"
     val featuresPath = preTextFilter(dataPath)
     //对上面的汇总文件每条信息进行分类信息替换
     val numCategory = markLabels(categoryPath, featuresPath, dataPath)
@@ -41,8 +41,11 @@ object mySVM {
         // println(features)
         LabeledPoint(label, Vectors.dense(features))
     }
-    val numIterations = 200
-    val svmModule = SVMMultiClassOVAWithSGD.train(trainData, numIterations)
+    val numIterations = 1000000
+    val step = 0.001
+    val regParam = 0.07
+    val miniBatchFraction = 1.0
+    val svmModule = SVMMultiClassOVAWithSGD.train(trainData, numIterations, step, regParam, miniBatchFraction)
     val predicionAndLabel = trainData.map(p => (svmModule.predict(p.features), p.label))
     val accuracy = 1.0 * predicionAndLabel.filter(x => x._1 == x._2).count() / trainData.count()
     println(accuracy)

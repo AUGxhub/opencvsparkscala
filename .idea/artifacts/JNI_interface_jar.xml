@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="JNI_interface:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/JNI_interface_jar</output-path>
+    <root id="archive" name="JNI_interface.jar">
+      <element id="module-output" name="JNI_interface" />
+      <element id="library" level="module" name="aug" module-name="JNI_interface" />
+      <element id="file-copy" path="$PROJECT_DIR$/JNI_interface/src/augJNI.dll" />
+    </root>
+  </artifact>
+</component>

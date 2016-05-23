@@ -17,16 +17,18 @@ object mnistSVM {
     println("all ready")
     //
     val trainD = MLUtils.loadLibSVMFile(sc, "C:\\Users\\augta\\Desktop\\datasets\\mnist\\mnist")
-    val testD = MLUtils.loadLibSVMFile(sc, "C:\\Users\\augta\\Desktop\\datasets\\mnist\\mnist.t")
-    val model = SVMMultiClassOVAWithSGD.train(trainD, 100)
-    val predictionAndLabel = testD.map(p => (model.predict(p.features), p.label))
-    val accuracy = 1.0 * predictionAndLabel.filter(x => x._1 == x._2).count() / testD.count()
-    val scoreAndLabels = testD.map { point =>
-      val score = model.predict(point.features)
-      (score, point.label)
-    }
+    val splits = trainD.randomSplit(Array(6, 4), 1)
+    val testSet = splits(0)
+    val trainSet = splits(1)
+    val model = SVMMultiClassOVAWithSGD.train(trainSet, 100)
+    val predictionAndLabel = testSet.map(p => (model.predict(p.features), p.label))
+    val accuracy = 1.0 * predictionAndLabel.filter(x => x._1 == x._2).count() / testSet.count()
+    //    val scoreAndLabels = testD.map { point =>
+    //      val score = model.predict(point.features)
+    //      (score, point.label)
+    //    }
     println(accuracy)
-    println(scoreAndLabels.take(5).mkString)
+    //    println(scoreAndLabels.take(5).mkString)
     //
     sc.stop()
   }

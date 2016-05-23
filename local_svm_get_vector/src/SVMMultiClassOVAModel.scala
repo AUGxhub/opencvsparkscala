@@ -29,6 +29,12 @@ class SVMMultiClassOVAModel(classModels: Array[SVMModel]) extends Classification
     }
   }
 
+  def predictPoint(testData: Vector, models: Array[(SVMModel, Int)]): Double =
+    models
+      .map { case (classModel, classNumber) => (classModel.predict(testData), classNumber) }
+      .maxBy { case (score, classNumber) => score }
+      ._2
+
   /**
    * Predict values for a single data point using the model trained.
    *
@@ -36,12 +42,6 @@ class SVMMultiClassOVAModel(classModels: Array[SVMModel]) extends Classification
    * @return predicted category from the trained model
    */
   override def predict(testData: Vector): Double = predictPoint(testData, classModelsWithIndex)
-
-  def predictPoint(testData: Vector, models: Array[(SVMModel, Int)]): Double =
-    models
-      .map { case (classModel, classNumber) => (classModel.predict(testData), classNumber) }
-      .maxBy { case (score, classNumber) => score }
-      ._2
 
 }
 
@@ -60,16 +60,6 @@ object SVMMultiClassOVAWithSGD {
    */
   def train(input: RDD[LabeledPoint], numIterations: Int, stepSize: Double, regParam: Double): SVMMultiClassOVAModel =
     train(input, numIterations, stepSize, regParam, 1.0)
-
-  /**
-   * Train a Multiclass SVM model given an RDD of (label, features) pairs,
-   * using One-vs-Rest method - create one SVMModel per class with SVMWithSGD.
-   *
-   * @param input RDD of (label, array of features) pairs.
-   * @param numIterations Number of iterations of gradient descent to run.
-   * @return a SVMModel which has the weights and offset from training.
-   */
-  def train(input: RDD[LabeledPoint], numIterations: Int): SVMMultiClassOVAModel = train(input, numIterations, 1.0, 0.01, 1.0)
 
   /**
    * Train a Multiclass SVM model given an RDD of (label, features) pairs,
@@ -113,6 +103,16 @@ object SVMMultiClassOVAWithSGD {
 
   }
 
+  /**
+   * Train a Multiclass SVM model given an RDD of (label, features) pairs,
+   * using One-vs-Rest method - create one SVMModel per class with SVMWithSGD.
+   *
+   * @param input RDD of (label, array of features) pairs.
+   * @param numIterations Number of iterations of gradient descent to run.
+   * @return a SVMModel which has the weights and offset from training.
+   */
+  def train(input: RDD[LabeledPoint], numIterations: Int): SVMMultiClassOVAModel = train(input, numIterations, 1.0, 0.01, 1.0)
+
   /*
   * @param path where to save module
   * @param module SVMMultiClassOVAModel instance
@@ -128,7 +128,7 @@ object SVMMultiClassOVAWithSGD {
   * @reutrn  a SVMMultiClassOVAModel instance
   */
   def load(path: String): SVMMultiClassOVAModel = {
-    val serial_in = new ObjectInputStream(new FileInputStream(path))
+    val serial_in = new ObjectInputStream(new FileInputStream("C:\\Users\\augta\\Desktop\\datasets\\mirflickr25k\\result\\svm_model.obj"))
     val saved_model = serial_in.readObject().asInstanceOf[SVMMultiClassOVAModel]
     serial_in.close()
     saved_model

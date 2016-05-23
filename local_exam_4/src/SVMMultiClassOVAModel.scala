@@ -128,7 +128,7 @@ object SVMMultiClassOVAWithSGD {
   * @reutrn  a SVMMultiClassOVAModel instance
   */
   def load(path: String): SVMMultiClassOVAModel = {
-    val serial_in = new ObjectInputStream(new FileInputStream(path))
+    val serial_in = new ObjectInputStream(new FileInputStream("C:\\Users\\augta\\Desktop\\datasets\\mirflickr25k\\result\\svm_model.obj"))
     val saved_model = serial_in.readObject().asInstanceOf[SVMMultiClassOVAModel]
     serial_in.close()
     saved_model

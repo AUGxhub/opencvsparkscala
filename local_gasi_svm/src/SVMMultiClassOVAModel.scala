@@ -13,6 +13,7 @@ import org.apache.spark.rdd.RDD
 class SVMMultiClassOVAModel(classModels: Array[SVMModel]) extends ClassificationModel with Serializable {
 
   val classModelsWithIndex = classModels.zipWithIndex
+  val sita = 100
 
   /**
    * Predict values for the given data set using the model trained.
@@ -21,12 +22,22 @@ class SVMMultiClassOVAModel(classModels: Array[SVMModel]) extends Classification
    * @return an RDD[Double] where each entry contains the corresponding prediction
    */
   override def predict(testData: RDD[Vector]): RDD[Double] = {
+
     val localClassModelsWithIndex = classModelsWithIndex
+
     val bcClassModels = testData.context.broadcast(localClassModelsWithIndex)
     testData.mapPartitions { iter =>
       val w = bcClassModels.value
       iter.map(v => predictPoint(v, w))
     }
+  }
+
+  def predictPoint(testData: Vector, models: Array[(SVMModel, Int)]): Double = {
+    val localSita = sita
+    models
+      .map { case (classModel, classNumber) => (classModel.predict(testData, localSita), classNumber) }
+      .maxBy { case (score, classNumber) => score }
+      ._2
   }
 
   /**
@@ -37,11 +48,6 @@ class SVMMultiClassOVAModel(classModels: Array[SVMModel]) extends Classification
    */
   override def predict(testData: Vector): Double = predictPoint(testData, classModelsWithIndex)
 
-  def predictPoint(testData: Vector, models: Array[(SVMModel, Int)]): Double =
-    models
-      .map { case (classModel, classNumber) => (classModel.predict(testData), classNumber) }
-      .maxBy { case (score, classNumber) => score }
-      ._2
 
 }
 
@@ -93,7 +99,6 @@ object SVMMultiClassOVAWithSGD {
              stepSize: Double,
              regParam: Double,
              miniBatchFraction: Double): SVMMultiClassOVAModel = {
-
     val numClasses = input.map(_.label).max().toInt
 
     val classModels = (0 until numClasses).map { classId =>

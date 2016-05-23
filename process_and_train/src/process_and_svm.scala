@@ -15,7 +15,8 @@ import tools.BufImgToMat
 object process_and_svm {
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("process_image")
-    conf.setMaster("spark://192.168.79.128:7077")
+    conf.setMaster("spark://192.168.79.129:7077")
+    conf.setExecutorEnv("executor-memory", "2048m")
     System.setProperty("hadoop.home.dir", "E:\\hadoop")
     conf.setJars(Seq("E:\\workspace\\spark\\ieda\\out\\artifacts\\process_and_train_svm_jar\\process_and_train_svm.jar"))
     val sc = new SparkContext(conf)
@@ -23,14 +24,14 @@ object process_and_svm {
     println("all ready")
     //read
     //    val aePath = "hdfs://192.168.79.128:9000/temp/bili.jpg"
-    val aePath = "hdfs://192.168.79.128:9000/datasets/lfw/Avril_Lavigne/Avril_Lavigne_0001.jpg"
+    val aePath = "hdfs://192.168.79.129:9000/datasets/lfw/Avril_Lavigne/Avril_Lavigne_0001.jpg"
     var matImage = loadImageMatFromFile(aePath)
     //    System.out.println("mat = " + matImage.dump());
 
     //get features algorithm
     matImage = detectFace(matImage)
     //save
-    val dstPath = "hdfs://192.168.79.128:9000/temp/l.jpg"
+    val dstPath = "hdfs://192.168.79.129:9000/temp/l.jpg"
     if (saveMatToPath(matImage, dstPath)) println("save success")
     sc.stop()
   }

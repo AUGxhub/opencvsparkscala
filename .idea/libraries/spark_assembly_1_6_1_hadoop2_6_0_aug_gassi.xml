@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="spark-assembly-1.6.1-hadoop2.6.0_aug_gassi">
+    <CLASSES>
+      <root url="jar://E:/tool/spark_runtime/lib/spark-assembly-1.6.1-hadoop2.6.0_aug_gassi.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://E:/tool/spark_runtime/lib/spark-assembly-1.6.1-hadoop2.6.0_aug_gassi.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,4 +1,5 @@
 import org.apache.spark.mllib.classification.SVMWithSGD
+import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.{SparkConf, SparkContext}
@@ -39,6 +40,19 @@ object SVM {
     //tarin a svm module with SGD
     val numIterations = 10
     val svmModule = SVMWithSGD.train(data, numIterations)
+    val pathToSaveModel = "C:\\Users\\augta\\Desktop\\datasets\\model"
+
+    //使用java接口保存模型
+    //    val serial_out = new ObjectOutputStream(new FileOutputStream(pathToSaveModel))
+    //    serial_out.writeObject(svmModule)
+    //    serial_out.close()
+    //读取模型
+    //    val serial_in = new ObjectInputStream(new FileInputStream("C:\\Users\\augta\\Desktop\\datasets\\mirflickr25k\\result\\svm_model.obj"))
+    //    val saved_model = serial_in.readObject().asInstanceOf[SVMMultiClassOVAModel]
+    //
+    //使用自带接口保存
+    //    svmModule.save(sc,pathToSaveModel)
+    //    println(svmModule.weights)
     //use this module to foretell a point whetcher is it a right point
     val dataPoint = data.first()
     val prediction = svmModule.predict(dataPoint.features)
@@ -49,6 +63,16 @@ object SVM {
     }.sum
     val svmAccuracy = svmTotalCorrest / numData
     println("svm accruay is : " + svmAccuracy)
+    // Clear the default threshold.
+    svmModule.clearThreshold()
+    // Compute raw scores on the test set.
+    val scoreAndLabels = data.map { point =>
+      val score = svmModule.predict(point.features)
+      (score, point.label)
+    }
+    val metrics = new BinaryClassificationMetrics(scoreAndLabels)
+    val auROC = metrics.areaUnderROC()
+    println("Area under ROC = " + auROC)
     //
     sc.stop()
 
